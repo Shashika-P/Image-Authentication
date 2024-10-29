@@ -1,7 +1,9 @@
 import convert_image
 import image_authentication
 
-print("Welcome to Image Authentication Software")
+print("\n---------------------------------------------------------------------"
+      "Welcome to Image Authentication Software"
+      "-----------------------------------------------------------------\n")
 while True:
     print("1. Convert Image")
     print("2. Authenticate Image")
