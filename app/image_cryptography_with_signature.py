@@ -3,17 +3,21 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.exceptions import InvalidSignature
 
 # Step 1: Generate RSA Keys for User A (sender) and User B (receiver)
-private_key_a = rsa.generate_private_key(
-    public_exponent=65537,
-    key_size=2048,
-)
-public_key_a = private_key_a.public_key()
+def generate_key_a():
+    private_key_a = rsa.generate_private_key(
+        public_exponent=65537,
+        key_size=2048,
+    )
+    public_key_a = private_key_a.public_key()
+    return private_key_a, public_key_a
 
-private_key_b = rsa.generate_private_key(
-    public_exponent=65537,
-    key_size=2048,
-)
-public_key_b = private_key_b.public_key()
+def generate_key_b():
+    private_key_b = rsa.generate_private_key(
+        public_exponent=65537,
+        key_size=2048,
+    )
+    public_key_b = private_key_b.public_key()
+    return private_key_b, public_key_b
 
 message = b"This is a message to sign, #111111111111111111111111111111111111111111111111111111"
 is_Signature_Valid = False
@@ -42,7 +46,6 @@ def sign_message(private_key_a, encrypted_message):
   )
   return signature
 
-print('private_key_a :', private_key_a, '\n\npublic_key_a :', public_key_a, '\n\nprivate_key_b :', private_key_b, '\n\npublic_key_b :', public_key_b)
 
 
 # Step 4: User B Decrypts the Encrypted Message with their Private Key
@@ -58,7 +61,7 @@ def decrypt_message(private_key_b, encrypted_message):
   return decrypted_message
 
 # Step 5: User B Verifies the Signature with User A's Public Key
-def check_message_signature(signature, encrypted_message):
+def check_message_signature(signature, encrypted_message, public_key_a):
   try:
       public_key_a.verify(
           signature,
@@ -76,9 +79,13 @@ def check_message_signature(signature, encrypted_message):
       print("\nSignature is invalid. Message has been tampered with.")
   return is_Signature_Valid
 
+private_key_a, public_key_a = generate_key_a()
+private_key_b, public_key_b = generate_key_b()
+print('private_key_a :', private_key_a, '\n\npublic_key_a :', public_key_a, '\n\nprivate_key_b :', private_key_b, '\n\npublic_key_b :', public_key_b)
+
 encrypted_message = encrypt_message(public_key_b, message)
 signature = sign_message(private_key_a, encrypted_message)
-is_Signature_Valid = check_message_signature(signature, encrypted_message)
+is_Signature_Valid = check_message_signature(signature, encrypted_message, public_key_a)
 
 if (is_Signature_Valid == True):
   decrypt_message = decrypt_message(private_key_b, encrypted_message)
